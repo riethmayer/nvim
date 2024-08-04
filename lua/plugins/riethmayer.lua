@@ -1,9 +1,36 @@
+package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?/init.lua"
+package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?.lua"
+
 return {
   { "nvim-lua/plenary.nvim" },
   { "Mofiqul/dracula.nvim" },
   { "LazyVim/LazyVim", opts = {
     colorscheme = "dracula",
   } },
+  { "LazyVim/LazyVim", import = "lazyvim.plugins.extras.lang.typescript" },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = {
+        "bash",
+        "html",
+        "javascript",
+        "json",
+        "lua",
+        "markdown",
+        "markdown_inline",
+        "python",
+        "query",
+        "regex",
+        "tsx",
+        "typescript",
+        "vim",
+        "yaml",
+        "ruby",
+        "java",
+      },
+    },
+  },
   {
     "folke/trouble.nvim",
     opts = {},
@@ -49,15 +76,70 @@ return {
     end,
   },
   {
+    "s1n7ax/nvim-window-picker",
+    name = "window-picker",
+    event = "VeryLazy",
+    version = "2.*",
+    config = function()
+      require("window-picker").setup()
+    end,
+  },
+  {
+    "3rd/image.nvim",
+    config = function()
+      require("image").setup({
+        backend = "kitty",
+        kitty_method = "normal",
+        integrations = {
+          markdown = {
+            enabled = true,
+            clear_in_insert_mode = false,
+            download_remote_images = true,
+            only_render_image_at_cursor = false,
+            filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
+          },
+          neorg = {
+            enabled = true,
+            clear_in_insert_mode = false,
+            download_remote_images = true,
+            only_render_image_at_cursor = false,
+            filetypes = { "norg" },
+          },
+          html = {
+            enabled = false,
+          },
+          css = {
+            enabled = false,
+          },
+        },
+        max_width = nil,
+        max_height = nil,
+        max_width_window_percentage = nil,
+        max_height_window_percentage = 50,
+        window_overlap_clear_enabled = false, -- toggles images when windows are overlapped
+        window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+        editor_only_render_when_focused = false, -- auto show/hide images when the editor gains/looses focus
+        tmux_show_only_in_active_window = false, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
+        hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" }, -- render image files as images when opened
+      })
+    end,
+  },
+  {
     "nvim-neo-tree/neo-tree.nvim",
+    requires = {
+      { "nvim-lua/plenary.nvim" },
+      { "nvim-tree/nvim-web-icons" },
+      { "MunifTanjim/nui.vim" },
+      { "3rd/image.nvim" },
+    },
     opts = {
       window = {
-        width = 30,
+        width = 60,
       },
       filesystem = {
         filtered_items = {
           visible = true,
-          -- hide_dotfiles = false,
+          hide_dotfiles = false,
           -- hide_hidden = false,
           -- hide_gitignored = false,
         },
@@ -80,6 +162,13 @@ return {
         help = true,
       },
     },
+    keys = {
+      {
+        "<C-i>",
+        "<cmd>CopilotChat<cr>",
+        desc = "Launch CopilotChat",
+      },
+    },
   },
 
   {
@@ -94,7 +183,7 @@ return {
           copilot_cmp.setup(opts)
           -- attach cmp source whenever copilot attaches
           -- fixes lazy-loading issues with the copilot cmp source
-          LazyVim.lsp.on_attach(function(client)
+          LazyVim.lsp.on_attach(function(_)
             copilot_cmp._on_insert_enter({})
           end, "copilot")
         end,
@@ -118,7 +207,7 @@ return {
       copilot_cmp.setup(opts)
       -- attach cmp source whenever copilot attaches
       -- fixes lazy-loading issues with the copilot cmp source
-      LazyVim.lsp.on_attach(function(_client)
+      LazyVim.lsp.on_attach(function(_)
         copilot_cmp._on_insert_enter({})
       end, "copilot")
     end,
@@ -173,4 +262,27 @@ return {
       })
     end,
   },
+
+  {
+    "nvim-telescope/telescope.nvim",
+    keys = {
+      -- add a keymap to browse plugin files
+      -- stylua: ignore
+      {
+        "<leader>fp",
+        function() require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root }) end,
+        desc = "Find Plugin File",
+      },
+    },
+    -- change some options
+    opts = {
+      defaults = {
+        layout_strategy = "horizontal",
+        layout_config = { prompt_position = "top" },
+        sorting_strategy = "ascending",
+        winblend = 0,
+      },
+    },
+  },
+  { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 }
