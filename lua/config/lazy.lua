@@ -40,14 +40,27 @@ require("lazy").setup({
       -- disable some rtp plugins
       disabled_plugins = {
         "gzip",
-        -- "matchit",
+        "matchit",
+        "mini.pairs",
         -- "matchparen",
         -- "netrwPlugin",
         "tarPlugin",
         "tohtml",
-        "tutor",
+        -- "tutor",
         "zipPlugin",
       },
+    },
+  },
+})
+
+require("telescope").load_extension("fzf")
+vim.g.coc_node_path = "/Users/janriethmayer/.volta/node/bin"
+
+require("lspconfig").ruff_lsp.setup({
+  init_options = {
+    settings = {
+      -- Any extra CLI arguments for `ruff` go here.
+      args = {},
     },
   },
 })
