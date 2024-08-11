@@ -10,7 +10,14 @@ return {
   { "LazyVim/LazyVim", import = "lazyvim.plugins.extras.lang.typescript" },
   {
     "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
     opts = {
+      auto_install = true,
+      indent = { enable = true },
+      highlight = {
+        enable = true,
+        additional_vim_regex_highlighting = { "markdown" },
+      },
       ensure_installed = {
         "bash",
         "html",
