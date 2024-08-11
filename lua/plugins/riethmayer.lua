@@ -144,39 +144,39 @@ return {
         width = 60,
       },
       filesystem = {
+        commands = {
+          -- override delete to use trash instead of rm
+          -- just in case I have no git repo in place
+          delete = function(state)
+            local path = state.tree:get_node().path
+            vim.fn.system({ "trash", vim.fn.fnameescape(path) })
+            require("neo-tree.sources.manager").refresh(state.name)
+          end,
+          -- overwrite default `delete_visual` command
+          delete_visual = function(state, selected_nodes)
+            local inputs = require("neo-tree.ui.inputs")
+
+            function GetTableLen(tbl)
+              local len = 0
+              for _ in pairs(tbl) do
+                len = len + 1
+              end
+              return len
+            end
+
+            local count = GetTableLen(selected_nodes)
+            for _, node in ipairs(selected_nodes) do
+              local path = node.path
+              vim.fn.system({ "trash", vim.fn.fnameescape(path) })
+            end
+            require("neo-tree.sources.manager").refresh(state.name)
+          end,
+        },
         filtered_items = {
           visible = true,
           hide_dotfiles = false,
           -- hide_hidden = false,
           -- hide_gitignored = false,
-          commands = {
-            -- override delete to use trash instead of rm
-            -- just in case I have no git repo in place
-            delete = function(state)
-              local path = state.tree:get_node().path
-              vim.fn.system({ "trash", vim.fn.fnameescape(path) })
-              require("neo-tree.sources.manager").refresh(state.name)
-            end,
-            -- overwrite default `delete_visual` command
-            delete_visual = function(state, selected_nodes)
-              local inputs = require("neo-tree.ui.inputs")
-
-              function GetTableLen(tbl)
-                local len = 0
-                for _ in pairs(tbl) do
-                  len = len + 1
-                end
-                return len
-              end
-
-              local count = GetTableLen(selected_nodes)
-              for _, node in ipairs(selected_nodes) do
-                local path = node.path
-                vim.fn.system({ "trash", vim.fn.fnameescape(path) })
-              end
-              require("neo-tree.sources.manager").refresh(state.name)
-            end,
-          },
         },
         follow_current_file = {
           enabled = true,
