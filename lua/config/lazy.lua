@@ -19,7 +19,9 @@ require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
-    { import = "lazyvim.plugins.extras.coding.copilot" },
+    { import = "lazyvim.plugins.extras.lang.json" },
+    { import = "lazyvim.plugins.extras.lang.tailwind" },
+    { import = "lazyvim.plugins.extras.lang.yaml" },
     { import = "lazyvim.plugins.extras.coding.copilot-chat" },
     -- import/override with your plugins
     { import = "plugins" },
@@ -33,7 +35,7 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  install = { colorscheme = { "tokyonight", "habamax" } },
+  install = { colorscheme = { "dracula" } },
   checker = { enabled = true }, -- automatically check for plugin updates
   performance = {
     rtp = {
@@ -56,7 +58,15 @@ require("lazy").setup({
 require("telescope").load_extension("fzf")
 vim.g.coc_node_path = "/Users/janriethmayer/.volta/node/bin"
 
+local on_attach = function(client, bufnr)
+  if client.name == "ruff_lsp" then
+    -- Disable hover in favor of Pyright
+    -- client.server_capabilities.hoverProvider = false
+  end
+end
+
 require("lspconfig").ruff_lsp.setup({
+  on_attach = on_attach,
   init_options = {
     settings = {
       -- Any extra CLI arguments for `ruff` go here.

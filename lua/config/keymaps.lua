@@ -44,13 +44,13 @@ vim.keymap.set("n", "<leader>of", ":s/\\(# \\)[^_]*_/\\1/ | s/-/ /g<cr>", { desc
 vim.keymap.set(
   "n",
   "<leader>os",
-  ':Telescope find_files search_dirs={"' .. obsidian_vault .. '/notes"}<cr>',
+  ':Telescope find_files search_dirs={"' .. obsidian_vault .. '"}<cr>',
   { desc = "search for files in full vault" }
 )
 vim.keymap.set(
   "n",
-  "<leader>zg",
-  ':Telescope live_grep search_dirs={"' .. obsidian_vault .. '/notes"}<cr>',
+  "<leader>og",
+  ':Telescope live_grep search_dirs={"' .. obsidian_vault .. '"}<cr>',
   { desc = "grep for files in full vault" }
 )
 --
