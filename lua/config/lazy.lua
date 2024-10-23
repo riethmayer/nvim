@@ -20,8 +20,9 @@ require("lazy").setup({
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
     { import = "lazyvim.plugins.extras.lang.json" },
-    { import = "lazyvim.plugins.extras.lang.tailwind" },
     { import = "lazyvim.plugins.extras.lang.yaml" },
+    { import = "lazyvim.plugins.extras.lang.tailwind" },
+    { import = "lazyvim.plugins.extras.lang.python" },
     { import = "lazyvim.plugins.extras.coding.copilot-chat" },
     -- import/override with your plugins
     { import = "plugins" },
@@ -71,6 +72,15 @@ require("lspconfig").ruff_lsp.setup({
     settings = {
       -- Any extra CLI arguments for `ruff` go here.
       args = {},
+    },
+  },
+})
+
+require("lspconfig").ruff.setup({
+  init_options = {
+    settings = {
+      -- Ruff language server settings go here
+      logLevel = "debug",
     },
   },
 })

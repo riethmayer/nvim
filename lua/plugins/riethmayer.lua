@@ -3,6 +3,7 @@ package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/shar
 
 return {
   { "nvim-lua/plenary.nvim" },
+  { "direnv/direnv.vim" },
   { "Mofiqul/dracula.nvim" },
   { "LazyVim/LazyVim", opts = {
     colorscheme = "dracula",
@@ -149,7 +150,7 @@ return {
           -- just in case I have no git repo in place
           delete = function(state)
             local path = state.tree:get_node().path
-            vim.fn.system({ "trash", vim.fn.fnameescape(path) })
+            vim.fn.system({ "trash", path })
             require("neo-tree.sources.manager").refresh(state.name)
           end,
           -- overwrite default `delete_visual` command
@@ -167,7 +168,7 @@ return {
             local count = GetTableLen(selected_nodes)
             for _, node in ipairs(selected_nodes) do
               local path = node.path
-              vim.fn.system({ "trash", vim.fn.fnameescape(path) })
+              vim.fn.system({ "trash", path })
             end
             require("neo-tree.sources.manager").refresh(state.name)
           end,
@@ -320,4 +321,23 @@ return {
     },
   },
   { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+  {
+    -- Install markdown preview, use npx if available.
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = function(plugin)
+      if vim.fn.executable("npx") then
+        vim.cmd("!cd " .. plugin.dir .. " && cd app && npx --yes yarn install")
+      else
+        vim.cmd([[Lazy load markdown-preview.nvim]])
+        vim.fn["mkdp#util#install"]()
+      end
+    end,
+    init = function()
+      if vim.fn.executable("npx") then
+        vim.g.mkdp_filetypes = { "markdown" }
+      end
+    end,
+  },
 }
