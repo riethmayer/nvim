@@ -11,7 +11,11 @@ Refer to the [documentation](https://lazyvim.github.io/installation) to get star
 
 ## Useful stuff
 
-```lua
-:checkhealth
-```
-Debug whether everything is setup properly.
+`:checkhealth` - Debug whether everything is setup properly.
+
+## Shortcuts to learn
+
+- `<leader> sh` - search help
+- `<leader> st` - search todos
+- `<leader> sk` - search key map
+- `<leader> sr` - search and replace (specter plugin)
